@@ -580,6 +580,8 @@ const NTPOST = new Set(["MobLand S2", "All Creatures Great and Small S7"]);
 const yrs = y => (y.match(/\d{4}/g) || ["0"]).map(Number);
 const ALL = [...SHOWS.recent, ...SHOWS.earlier].sort((a, b) => {
   const A = yrs(a[3]), B = yrs(b[3]);
+  const FIRST = ["MobLand S2", "All Creatures Great and Small S7"], fa = FIRST.indexOf(a[0]), fb = FIRST.indexOf(b[0]);
+  if (fa > -1 && fb > -1) return fa - fb;
   return (NTPOST.has(b[0]) - NTPOST.has(a[0])) || (Math.max(...B) - Math.max(...A)) || (Math.min(...B) - Math.min(...A)) || a[0].localeCompare(b[0]);
 });
 const $ = id => document.getElementById(id);
