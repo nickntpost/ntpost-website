@@ -1,0 +1,801 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>NT Post</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap">
+<style>
+/* Layout: a quiet portfolio gallery. Logo left, small centred nav; one large
+   title card for the selected show with arrows, a filmstrip of every credit
+   below. About and contact are their own spare pages. */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --ink: #000000;
+  --text: #000000;
+  --muted: #000000;
+  --line: #e4e4e4;
+  --red: #D23A3F;
+  --font: 'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-weight: 400; line-height: 1.55; text-transform: lowercase; -webkit-font-smoothing: antialiased; }
+button { font: inherit; text-transform: inherit; color: inherit; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+.page { min-height: 100%; display: flex; flex-direction: column; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+
+/* header */
+header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding-block: 26px 10px; }
+.brand { justify-self: start; display: block; }
+.logo { display: block; width: 150px; height: auto; }
+.logo .nt { fill: var(--red); }
+.logo .pl { fill: var(--ink); }
+nav { display: flex; gap: 22px; font-size: 14px; }
+nav a { text-decoration: none; color: var(--ink); font-weight: 300; padding-block: 6px; border-bottom: 1px solid transparent; transition: color .2s; }
+nav a:hover { color: var(--ink); }
+nav a[aria-current="page"] { font-weight: 400; border-bottom-color: var(--ink); }
+.ext { justify-self: end; display: flex; gap: 18px; }
+.imdb { font-size: 13px; font-weight: 300; color: var(--ink); text-decoration: none; }
+.imdb:hover { color: var(--red); }
+.contact .links { display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; }
+
+main { flex: 1; display: flex; flex-direction: column; }
+.view { width: 100%; max-width: 1080px; margin: 0 auto; }
+
+/* gallery: vertical slider of credits beside the details of the selected one */
+.gallery { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: clamp(32px, 6vw, 80px); align-items: start; padding-top: clamp(28px, 5vw, 56px); }
+.slider { display: flex; flex-direction: column; align-items: flex-start; }
+.strip { position: relative; width: 320px; height: 600px; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; padding: 70px 50px 110px 0; }
+.strip::-webkit-scrollbar { display: none; }
+.strip { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 110px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 110px), transparent 100%); }
+.strip-inner { display: flex; flex-direction: column; gap: 2px; }
+.grp { padding: 18px 0 6px 12px; font-size: 11px; font-weight: 400; letter-spacing: .04em; color: var(--red); }
+.grp:first-child { padding-top: 0; }
+.thumb { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: baseline; gap: 10px; width: 100%; padding: 7px 0 7px 12px; position: relative; opacity: .3;
+  transform-origin: left center; transition: opacity .25s, transform .3s cubic-bezier(.2,.7,.2,1); }
+.thumb span { font-size: 17px; font-weight: 300; line-height: 1.2; min-width: 0; }
+.thumb small { font-size: 11px; font-weight: 300; font-variant-numeric: tabular-nums; flex: none; }
+.thumb:hover { opacity: 1; transform: scale(1.12); }
+.thumb[aria-current="true"] { opacity: 1; }
+.thumb::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 2px; background: var(--red); opacity: 0; transition: opacity .2s; }
+.thumb:hover::before, .thumb:focus-visible::before, .thumb[aria-current="true"]::before { opacity: 1; }
+.strip-inner:hover .thumb[aria-current="true"]:not(:hover)::before { opacity: 0; }
+.thumb:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; opacity: 1; }
+.info { align-self: center; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.info h1 { margin: 0; font-weight: 300; font-size: clamp(32px, 4.4vw, 52px); line-height: 1.05; letter-spacing: -0.015em; text-wrap: balance; }
+.info .line { font-size: 15px; color: var(--ink); line-height: 1.6; }
+.info .line span { font-weight: 300; }
+.info .role { color: var(--red); }
+.info p { margin: 0; font-size: 15px; font-weight: 300; line-height: 1.65; color: var(--ink); max-width: 52ch; }
+.crew { display: grid; grid-template-columns: 136px minmax(0, 1fr); gap: 4px 12px; margin: 4px 0 0; font-size: 13px; max-width: 52ch; }
+.crew dt { font-weight: 400; }
+.crew dd { margin: 0; font-weight: 300; }
+.crew .more { background: none; border: none; padding: 0; cursor: pointer; font-weight: 400; color: var(--red); }
+.crew .more:hover { text-decoration: underline; }
+.counter { margin-top: 6px; font-size: 12px; font-weight: 300; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 80px); padding-top: clamp(40px, 7vw, 80px); }
+.about h1 { margin: 0; font-weight: 300; font-size: clamp(24px, 2.8vw, 30px); line-height: 1.12; letter-spacing: -0.01em; text-wrap: balance; }
+.about h1 .sub { font-size: 0.72em; }
+.about .copy { display: flex; flex-direction: column; gap: 18px; }
+.about .copy p { margin: 0; font-size: 14px; font-weight: 300; line-height: 1.7; color: var(--text); }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 8px; padding-top: 20px; border-top: 1px solid var(--line); }
+.facts b { display: block; font-weight: 300; font-size: clamp(24px, 2.8vw, 30px); line-height: 1; color: var(--red); font-variant-numeric: tabular-nums; }
+.facts span { display: block; margin-top: 6px; font-size: 12px; color: var(--muted); }
+.exp h2, .contact h2 { margin: 0 0 8px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.xrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding-block: 11px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.xrow b { font-weight: 400; }
+.xrow .w { color: var(--muted); }
+.xrow .d { grid-row: span 2; align-self: center; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+
+/* cv */
+.cv { max-width: 860px; margin: 0 auto; padding-top: clamp(36px, 6vw, 72px); display: flex; flex-direction: column; gap: 40px; }
+.cv-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px 32px; flex-wrap: wrap; padding-bottom: 20px; border-bottom: 1px solid var(--ink); }
+.cv-head h1 { margin: 0; font-weight: 300; font-size: clamp(32px, 4.4vw, 46px); line-height: 1.05; letter-spacing: -0.015em; }
+.cv-head .title { margin-top: 8px; font-size: 15px; color: var(--red); }
+.cv-contact { display: flex; flex-direction: column; gap: 2px; font-size: 14px; font-weight: 300; text-align: right; }
+.cv-contact a { text-decoration: none; }
+.cv-contact a:hover { color: var(--red); }
+.cv h2 { margin: 0 0 10px; font-size: 13px; font-weight: 500; }
+.cv .note { font-weight: 300; }
+.cv p.lead + p.lead { margin-top: 14px; }
+.cv p.lead { margin: 0; font-size: 16px; font-weight: 300; line-height: 1.7; max-width: 64ch; }
+.cv-table { border-top: 1px solid var(--line); }
+.cv-sub { padding: 18px 0 8px; font-size: 12px; font-weight: 500; border-bottom: 1px solid var(--line); }
+.crow { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.2fr) minmax(0, 0.9fr) 92px; gap: 4px 16px; align-items: baseline; padding-block: 9px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 300; }
+.crow b { font-weight: 400; font-size: 14px; }
+.crow .r { color: var(--red); }
+.crow .y { text-align: right; font-variant-numeric: tabular-nums; }
+.cv .xrow { font-weight: 300; }
+
+/* home: statement, featured work tiles in each show's own colours, networks, services */
+.home { display: flex; flex-direction: column; gap: clamp(36px, 6vw, 64px); padding-top: 0; }
+#feat-anchor { margin-top: calc(-1 * clamp(36px, 6vw, 64px)); scroll-margin-top: 24px; }
+/* hero: the statement holds still on the left while the credits roll up like an end roller */
+.hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center;
+  min-height: calc(100svh - 120px); padding-block: 12px 64px; }
+.hero-copy { display: flex; flex-direction: column; gap: 22px; }
+.hero h1 { margin: 0; font-weight: 300; font-size: clamp(36px, 5vw, 76px); line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
+.hero p { margin: 0; font-size: 17px; font-weight: 300; line-height: 1.6; max-width: 44ch; }
+.hero-links { display: flex; gap: 12px 28px; flex-wrap: wrap; }
+.hero-links .cta:first-child { color: var(--red); }
+.roller { position: relative; height: min(70svh, 640px); overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%); }
+.roll { display: flex; flex-direction: column; align-items: center; text-align: center; animation: roll var(--dur, 90s) linear infinite; }
+.roller:hover .roll, .roller:focus-within .roll { animation-play-state: paused; }
+@keyframes roll { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+.ri { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; padding-block: 22px; max-width: 100%; }
+.ri .rr { font-size: 11px; font-weight: 400; letter-spacing: 0.08em; color: var(--red); }
+.ri .rt { font-size: clamp(20px, 2.2vw, 28px); font-weight: 300; line-height: 1.1; letter-spacing: -0.01em; text-wrap: balance; }
+.ri .rm { font-size: 12px; font-weight: 300; }
+.ri:hover .rt { color: var(--red); }
+.ri:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.scroll-cue { position: absolute; left: 0; bottom: 18px; font-size: 12px; font-weight: 300; text-decoration: none; }
+.scroll-cue:hover { color: var(--red); }
+@media (prefers-reduced-motion: reduce) { .roll { animation: none; } .roller { overflow-y: auto; } }
+.feat-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: -40px; }
+.feat-head h2, .delivered h2 { margin: 0; font-size: 13px; font-weight: 500; }
+.feat-head a { font-size: 13px; font-weight: 300; text-decoration: none; }
+.feat-head a:hover { color: var(--red); }
+.feat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.tile { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tile .card { position: relative; aspect-ratio: 16 / 9; max-width: 100%; overflow: hidden; display: flex; align-items: flex-end; padding: 14px 16px;
+  background: linear-gradient(140deg, var(--c0) 35%, var(--c1) 130%); color: #fff; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.tile .card::after { content: ""; position: absolute; left: 16px; top: 14px; width: 22px; height: 2px; background: var(--c2); }
+.tile .card span { font-size: clamp(17px, 1.8vw, 22px); font-weight: 300; line-height: 1.1; letter-spacing: -0.01em; text-wrap: balance; }
+.tile:hover .card { transform: scale(1.02); }
+.tile:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+.tile .meta { font-size: 12px; font-weight: 300; }
+.tile .meta b { font-weight: 400; color: var(--red); }
+.delivered { display: flex; flex-direction: column; gap: 8px; padding-top: 18px; border-top: 1px solid var(--line); }
+.delivered p { margin: 0; font-size: clamp(16px, 1.7vw, 19px); font-weight: 300; line-height: 1.6; }
+.offer { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.offer a { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--ink); text-decoration: none; font-size: 13px; font-weight: 300; line-height: 1.5; }
+.offer a b { font-weight: 400; font-size: 14px; color: var(--red); }
+.offer a:hover b { text-decoration: underline; }
+
+/* work filters */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; padding-top: clamp(24px, 4vw, 40px); }
+.chip { font-size: 13px; font-weight: 300; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 34px; cursor: pointer; }
+.chip:hover { border-color: var(--ink); }
+.chip[aria-pressed="true"] { border-color: var(--red); color: var(--red); font-weight: 400; }
+.filters { display: none !important; }
+.filters + .gallery { padding-top: clamp(28px, 5vw, 56px); }
+
+/* services + suite: a heading and lede on the left, the detail in rows on the right */
+.biz { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: 40px clamp(32px, 6vw, 80px); padding-top: clamp(36px, 6vw, 72px); align-items: start; }
+.biz-head { display: flex; flex-direction: column; gap: 16px; }
+.biz-head h1 { margin: 0; font-weight: 300; font-size: clamp(26px, 3.2vw, 36px); line-height: 1.1; letter-spacing: -0.015em; text-wrap: balance; }
+.biz-head p { margin: 0; font-size: 15px; font-weight: 300; line-height: 1.65; max-width: 42ch; }
+.svc-list { display: flex; flex-direction: column; border-top: 1px solid var(--ink); }
+.svc { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 6px 24px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+.svc h2 { margin: 0; font-size: 15px; font-weight: 400; color: var(--red); }
+.svc p { margin: 0; font-size: 14px; font-weight: 300; line-height: 1.65; }
+.svc ul { grid-column: 2; margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 12px; font-weight: 400; }
+.svc li::before { content: "— "; color: var(--red); }
+.steps { grid-column: 2; display: flex; flex-direction: column; gap: 14px; }
+.steps h2 { margin: 0; font-size: 13px; font-weight: 500; }
+.steps ol { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.steps li { counter-increment: s; display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; font-weight: 300; line-height: 1.55; }
+.steps li::before { content: counter(s); font-size: 12px; color: var(--red); font-variant-numeric: tabular-nums; }
+.steps li b { font-weight: 400; }
+.cta { align-self: flex-start; margin-top: 6px; font-size: 14px; text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid var(--red); }
+.cta:hover { color: var(--red); }
+.spec { margin: 0; border-top: 1px solid var(--ink); }
+.spec div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 4px 24px; padding-block: 14px; border-bottom: 1px solid var(--line); font-size: 14px; }
+.spec dt { font-weight: 400; color: var(--red); }
+.spec dd { margin: 0; font-weight: 300; line-height: 1.55; }
+.aside { grid-column: 2; margin: 0; font-size: 14px; font-weight: 300; }
+.aside a { border-bottom: 1px solid var(--red); text-decoration: none; }
+.aside a:hover { color: var(--red); }
+
+/* contact */
+.contact { padding-top: clamp(56px, 10vw, 120px); display: flex; flex-direction: column; gap: 22px; align-items: center; text-align: center; }
+.contact .ask { margin: 0; font-weight: 300; font-size: clamp(24px, 2.8vw, 30px); color: var(--text); }
+.big { font-weight: 300; font-size: calc(clamp(24px, 2.8vw, 30px) * 0.72); letter-spacing: -0.015em; line-height: 1.15; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; user-select: all; font-variant-numeric: tabular-nums; }
+.big:hover { color: var(--red); }
+.row { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.copybtn { font-size: 13px; font-weight: 300; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; min-height: 40px; cursor: pointer; }
+.copybtn:hover { color: var(--ink); border-color: var(--ink); }
+.contact .imdb-link { font-size: 14px; font-weight: 300; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--line); }
+.contact .imdb-link:hover { color: var(--red); border-color: var(--red); }
+
+footer { padding-block: 48px max(24px, env(safe-area-inset-bottom, 0px)); text-align: center; font-size: 12px; font-weight: 300; color: var(--ink); }
+.svcline { margin: 0 0 14px; font-size: 12px; font-weight: 300; }
+.about { grid-template-columns: minmax(0, 1fr) !important; max-width: 640px; }
+.biz .spec { grid-column: 2; }
+.biz .spec div { grid-template-columns: 190px minmax(0, 1fr); }
+@media (max-width: 720px) { .biz .spec div { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 720px) { .biz .spec { grid-column: 1; } }
+#v-services .biz-head { align-self: start; }
+.founder-links { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; font-weight: 300; }
+.founder-links span { font-weight: 400; }
+.founder-links a { text-decoration: none; border-bottom: 1px solid var(--line); }
+.founder-links a:hover { color: var(--red); border-color: var(--red); }
+details.svc { display: block; padding-block: 0; }
+details.svc summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-block: 18px; }
+details.svc summary::-webkit-details-marker { display: none; }
+details.svc summary::after { content: "+"; font-size: 18px; font-weight: 300; color: var(--red); line-height: 1; transition: transform .3s cubic-bezier(.16,1,.3,1); }
+details.svc[open] summary::after { transform: rotate(45deg); }
+details.svc summary:hover h2 { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+details.svc p { padding: 0 0 20px; max-width: 52ch; animation: svc-open .4s cubic-bezier(.16,1,.3,1); }
+@keyframes svc-open { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+details.svc .sub-svc { padding: 0 0 20px; animation: svc-open .4s cubic-bezier(.16,1,.3,1); }
+details.svc .sub-svc h3 { margin: 0 0 4px; font-size: 14px; font-weight: 400; }
+details.svc .sub-svc p { padding: 0 0 14px; animation: none; }
+details.svc .sub-svc p:last-child { padding-bottom: 0; }
+/* trailers: an official trailer opens in a dark lightbox, loaded only when asked for */
+.play { align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; background: none; border: 0; padding: 4px 0; cursor: pointer; font-size: 14px; font-weight: 400; color: var(--ink); }
+.play .tri { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--red); position: relative; transition: background-color .25s ease; }
+.play .tri::after { content: ""; position: absolute; left: 11px; top: 9px; border-left: 10px solid var(--red); border-top: 6px solid transparent; border-bottom: 6px solid transparent; transition: border-color .25s ease; }
+.play:hover .tri { background: var(--red); }
+.play:hover .tri::after { border-left-color: #fff; }
+.tl { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px; background: rgba(8,8,8,.92); animation: tl-in .45s ease; text-transform: none; }
+@keyframes tl-in { from { opacity: 0; } to { opacity: 1; } }
+.tl-box { width: min(1100px, 100%); animation: tl-box .6s cubic-bezier(.16,1,.3,1); }
+@keyframes tl-box { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+.tl-frame { position: relative; aspect-ratio: 16 / 9; background: #000; }
+.tl-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.tl-bar { display: flex; gap: 18px; align-items: baseline; padding-top: 12px; font-size: 13px; font-weight: 300; color: #ddd; }
+.tl-bar span { flex: 1; text-transform: lowercase; }
+.tl-bar a, .tl-bar button { color: #ddd; background: none; border: 0; padding: 0; font: inherit; cursor: pointer; text-decoration: none; text-transform: lowercase; }
+.tl-bar a:hover, .tl-bar button:hover { color: #fff; }
+.cvid { position: relative; aspect-ratio: 16 / 9; width: 100%; max-width: 640px; background: #000; animation: tl-box .6s cubic-bezier(.16,1,.3,1); }
+.cvid iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.cvid-x { position: absolute; right: 0; top: calc(100% + 6px); background: none; border: 0; padding: 0; cursor: pointer; font-size: 12px; font-weight: 300; color: var(--ink); }
+.cvid-x:hover { color: var(--red); }
+.cvid + h1 { margin-top: 18px; }
+.roll.still { animation: none; }
+.roller:has(.still) { height: auto; overflow: visible; -webkit-mask-image: none; mask-image: none; display: flex; flex-direction: column; align-items: center; }
+.rlabel { text-align: center; font-size: 11px; font-weight: 400; letter-spacing: .04em; color: var(--red); padding-bottom: 6px; }
+/* landing page: a soft pool of light follows the cursor across the giant nt behind the page, which drifts gently in parallax */
+.wm-lit { opacity: 0; transition: opacity 1.2s ease; --mx: 50%; --my: 50%;
+  -webkit-mask-image: radial-gradient(circle min(34vw, 420px) at var(--mx) var(--my), rgba(0,0,0,1) 0%, rgba(0,0,0,.45) 38%, transparent 70%);
+          mask-image: radial-gradient(circle min(34vw, 420px) at var(--mx) var(--my), rgba(0,0,0,1) 0%, rgba(0,0,0,.45) 38%, transparent 70%); }
+body.on-home:not(.intro-on) .wm-lit { opacity: .16; }
+.wm { will-change: transform; }
+.legal { margin: 10px 0 0; font-size: 10px; line-height: 1.6; letter-spacing: 0.01em; color: #8a8a8a; text-transform: none; }
+
+@media (max-width: 720px) {
+  header { grid-template-columns: 1fr auto; padding-block: 18px 6px; }
+  .logo { width: 116px; }
+  nav { grid-column: 1 / -1; grid-row: 2; justify-content: center; }
+  .ext { grid-row: 1; grid-column: 2; gap: 12px; }
+  .gallery { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .info { position: static; order: -1; min-height: 210px; padding-top: 0; }
+  .slider { align-items: center; }
+  .strip { width: 100%; height: 440px; padding: 12px 0; }
+  .strip-inner { align-items: center; }
+  .thumb:hover { transform: none; }
+  .strip-inner { align-items: stretch; }
+  .about { grid-template-columns: minmax(0, 1fr); }
+  nav { gap: 6px 16px; flex-wrap: wrap; }
+  .feat { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .offer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .feat-head { margin-bottom: -24px; }
+  .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-block: 28px 48px; gap: 28px; }
+  .roller { height: 340px; }
+  .scroll-cue { display: none; }
+  .biz { grid-template-columns: minmax(0, 1fr); }
+  .steps, .aside { grid-column: 1; }
+  .svc, .spec div { grid-template-columns: minmax(0, 1fr); }
+  .svc ul { grid-column: 1; }
+  .steps ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cv-contact { text-align: left; }
+  .crow { grid-template-columns: minmax(0, 1fr) auto; }
+  .crow .p, .crow .b { grid-column: 1; }
+  .crow .y { grid-column: 2; grid-row: 1; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* big faint nt behind every page */
+.wm { position: fixed; pointer-events: none; z-index: -1; height: auto; width: max(2300px, 180vw); left: 50%; top: 55%; transform: translate(-50%, -50%); fill: var(--red); opacity: .02; }
+body { isolation: isolate; overflow-x: clip; }
+.page { position: relative; z-index: 0; }
+/* landing intro, cinematic and restrained: a slow camera drift while a soft edge of light reveals the nt left to right,
+   one sheen of light across the letters, "post ltd" follows, a held beat, then the logo travels into the header */
+.intro { position: fixed; inset: 0; z-index: 50; overflow: hidden; background: var(--bg); cursor: pointer; }
+.intro .stage { position: absolute; left: 50%; top: 50%; width: min(600px, 78vw); transform: translate(-50%, -50%); transform-origin: 0 0; }
+.intro .cam { transform-origin: 40% 60%; will-change: transform; }
+.intro svg { display: block; width: 100%; height: auto; overflow: visible; }
+.intro .nt { fill: var(--red); }
+.intro .pl { fill: var(--ink); }
+.intro .line { position: absolute; left: 0; right: 0; top: 50%; height: 1px; transform-origin: 0 50%; transform: scaleX(0); opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(210,58,63,.0) 10%, rgba(210,58,63,.55) 50%, rgba(210,58,63,0) 90%, transparent); }
+body.intro-on .brand { opacity: 0; }
+body.intro-hide main, body.intro-hide footer, body.intro-hide nav, body.intro-hide .ext { opacity: 0; transform: translateY(8px); }
+main, footer, nav, .ext { transition: opacity 1.1s ease, transform 1.4s cubic-bezier(.16,1,.3,1); }
+.brand { transition: opacity .2s ease; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="nt" d="M1682.53 1799.49C1618.46 1789.00 1576.78 1752.65 1562.13 1694.50C1546.94 1634.20 1574.72 1545.17 1705.87 1233.80C1832.24 933.79 1854.50 853.19 1816.50 833.19C1779.57 813.76 1723.57 874.09 1654.26 1008.00C1623.41 1067.61 1619.74 1073.01 1613.14 1068.39C1607.10 1064.15 1608.44 1053.96 1619.46 1020.50C1644.91 943.22 1679.21 876.82 1724.57 817.00C1770.34 756.63 1805.12 725.62 1899.00 661.49C1952.62 624.86 1967.74 614.13 2001.98 588.45C2039.66 560.19 2120.44 498.14 2156.00 470.13C2235.82 407.27 2251.22 396.34 2279.60 382.43C2351.55 347.17 2418.39 357.09 2429.60 404.69C2433.32 420.46 2428.55 440.83 2410.00 488.41C2406.59 497.17 2393.90 532.27 2381.81 566.41C2369.71 600.56 2358.51 632.10 2356.93 636.50C2351.14 652.53 2353.02 660.89 2363.03 663.73C2370.45 665.84 2432.60 666.65 2464.48 665.06C2623.61 657.10 2704.67 632.22 2773.65 570.13C2791.96 553.66 2801.84 540.55 2824.98 502.00C2839.43 477.93 2841.49 475.00 2843.94 475.00C2856.75 475.00 2826.33 560.11 2792.43 619.13C2732.77 722.98 2660.96 776.15 2536.66 808.50C2477.77 823.82 2425.01 830.08 2339.95 831.85C2291.85 832.85 2293.31 832.30 2283.63 853.08C2277.20 866.89 2268.91 889.44 2253.50 935.00C2237.79 981.43 2218.68 1035.27 2168.99 1173.00C2135.01 1267.21 2116.03 1320.13 2085.98 1404.50C2072.61 1442.02 2068.84 1451.91 2056.10 1482.81C2046.55 1505.98 2046.90 1513.00 2057.63 1513.00C2078.19 1513.00 2165.76 1446.62 2249.14 1367.84C2280.37 1338.34 2286.37 1333.99 2291.85 1336.92C2297.97 1340.19 2290.73 1355.72 2266.19 1392.00C2117.78 1611.43 1905.72 1775.10 1739.49 1798.52C1723.82 1800.73 1693.28 1801.25 1682.53 1799.49ZM276.50 1794.95C183.16 1787.43 131.18 1760.42 119.96 1713.61C114.24 1689.75 120.78 1665.84 152.11 1596.19C162.59 1572.88 217.28 1447.99 257.49 1355.50C303.96 1248.65 355.87 1130.77 384.99 1066.00C426.32 974.07 439.42 941.20 447.36 909.50C460.80 855.87 453.68 832.52 423.98 832.71C379.80 833.00 323.19 895.79 262.75 1011.50C235.36 1063.94 233.43 1066.53 227.60 1058.67C217.98 1045.70 252.64 948.22 290.06 883.02C380.43 725.55 518.91 639.42 681.50 639.56C849.52 639.71 919.87 746.94 877.63 938.50C872.74 960.66 873.03 961.38 880.77 946.26C941.81 826.98 1053.82 722.96 1171.18 676.58C1366.00 599.59 1528.73 635.27 1571.13 764.28C1596.43 841.26 1579.69 919.50 1498.35 1104.34C1490.32 1122.58 1477.69 1152.12 1470.27 1170.00C1424.55 1280.15 1406.40 1317.71 1323.67 1473.46C1299.83 1518.32 1298.34 1525.00 1312.10 1525.00C1334.02 1525.00 1434.72 1456.23 1509.60 1390.12C1539.47 1363.75 1549.68 1357.68 1555.10 1363.10C1562.62 1370.62 1526.13 1421.64 1459.72 1496.44C1223.85 1762.10 925.65 1873.77 829.38 1732.48C796.65 1684.45 797.79 1631.10 833.50 1539.50C849.69 1497.96 895.71 1395.90 945.88 1290.25C956.40 1268.11 973.60 1231.89 984.11 1209.75C1008.58 1158.23 1026.48 1119.72 1040.00 1089.50C1045.91 1076.30 1058.04 1049.30 1066.97 1029.50C1110.50 932.90 1122.96 895.03 1121.80 862.70C1121.21 846.16 1118.54 840.91 1107.96 835.50C1083.01 822.74 1049.42 835.84 1006.39 875.10C943.09 932.86 902.77 977.24 866.58 1028.96C846.34 1057.88 838.15 1074.13 816.18 1129.00C807.91 1149.62 796.45 1177.75 790.71 1191.50C784.96 1205.25 771.69 1236.97 761.22 1262.00C750.75 1287.03 734.99 1325.28 726.20 1347.00C707.24 1393.87 701.72 1407.19 665.73 1493.00C650.62 1529.03 633.27 1570.92 627.17 1586.11C597.98 1658.83 586.63 1678.76 557.06 1709.31C509.43 1758.49 456.01 1783.21 374.98 1793.56C360.29 1795.44 294.15 1796.37 276.50 1794.95Z"/>
+    <path id="pl" d="M2412.0 1770.0V1535.7H2426.9L2428.2 1581.6L2425.9 1578.9Q2430.2 1564.8 2439.2 1554.2Q2448.3 1543.6 2461.5 1538.0Q2474.7 1532.4 2490.2 1532.4Q2511.3 1532.4 2528.2 1542.7Q2545.0 1552.9 2554.9 1572.0Q2564.8 1591.2 2564.8 1618.2Q2564.8 1644.9 2554.9 1664.2Q2545.0 1683.5 2528.0 1693.8Q2511.0 1704.0 2489.6 1704.0Q2466.8 1704.0 2450.0 1692.0Q2433.1 1679.9 2426.5 1659.5L2428.5 1656.5V1770.0ZM2487.6 1689.5Q2515.6 1689.5 2532.0 1670.3Q2548.3 1651.2 2548.3 1618.2Q2548.3 1585.2 2532.1 1566.1Q2516.0 1546.9 2488.2 1546.9Q2470.8 1546.9 2457.4 1555.7Q2444.0 1564.4 2436.3 1580.4Q2428.5 1596.4 2428.5 1618.2Q2428.5 1639.7 2436.1 1655.8Q2443.7 1672.0 2457.1 1680.7Q2470.4 1689.5 2487.6 1689.5ZM2703.5 1532.4Q2726.6 1532.4 2744.3 1542.7Q2761.9 1552.9 2772.0 1572.2Q2782.1 1591.5 2782.1 1618.2Q2782.1 1644.9 2772.0 1664.2Q2761.9 1683.5 2744.3 1693.8Q2726.6 1704.0 2703.5 1704.0Q2680.4 1704.0 2662.8 1693.8Q2645.1 1683.5 2635.1 1664.2Q2625.0 1644.9 2625.0 1618.2Q2625.0 1591.5 2635.1 1572.2Q2645.1 1552.9 2662.8 1542.7Q2680.4 1532.4 2703.5 1532.4ZM2703.5 1546.6Q2684.7 1546.6 2670.9 1555.2Q2657.0 1563.8 2649.3 1579.8Q2641.5 1595.8 2641.5 1618.2Q2641.5 1640.3 2649.3 1656.5Q2657.0 1672.7 2670.9 1681.2Q2684.7 1689.8 2703.5 1689.8Q2722.3 1689.8 2736.2 1681.2Q2750.1 1672.7 2757.8 1656.5Q2765.6 1640.3 2765.6 1618.2Q2765.6 1595.8 2757.8 1579.8Q2750.1 1563.8 2736.2 1555.2Q2722.3 1546.6 2703.5 1546.6ZM2908.9 1704.0Q2883.8 1704.0 2864.5 1693.8Q2845.2 1683.5 2837.3 1664.4L2851.5 1654.8Q2857.4 1671.3 2872.8 1680.4Q2888.1 1689.5 2910.2 1689.5Q2932.0 1689.5 2944.4 1680.9Q2956.8 1672.3 2956.8 1658.1Q2956.8 1648.6 2950.7 1641.5Q2944.5 1634.4 2927.7 1630.7L2889.1 1622.5Q2865.7 1617.6 2855.5 1606.5Q2845.2 1595.4 2845.2 1579.6Q2845.2 1566.4 2853.1 1555.8Q2861.1 1545.3 2875.1 1538.9Q2889.1 1532.4 2907.9 1532.4Q2932.7 1532.4 2948.8 1542.2Q2965.0 1551.9 2971.6 1571.4L2957.7 1580.3Q2952.8 1562.8 2939.4 1554.9Q2926.1 1546.9 2907.9 1546.9Q2894.1 1546.9 2883.7 1551.1Q2873.3 1555.2 2867.5 1562.3Q2861.7 1569.4 2861.7 1578.6Q2861.7 1588.2 2868.3 1595.9Q2874.9 1603.7 2891.8 1607.3L2931.3 1615.9Q2954.8 1620.9 2964.0 1630.9Q2973.3 1641.0 2973.3 1655.8Q2973.3 1670.3 2965.3 1681.4Q2957.4 1692.5 2942.9 1698.2Q2928.4 1704.0 2908.9 1704.0ZM3071.1 1489.9V1657.1Q3071.1 1672.7 3078.5 1680.7Q3085.9 1688.8 3100.1 1688.8Q3109.3 1688.8 3116.4 1685.7Q3123.5 1682.6 3129.1 1676.6L3135.4 1690.1Q3129.1 1696.4 3119.6 1700.2Q3110.0 1704.0 3098.1 1704.0Q3085.3 1704.0 3075.4 1699.2Q3065.5 1694.4 3060.0 1684.5Q3054.6 1674.6 3054.6 1659.5V1494.5ZM3132.8 1535.7V1549.9H3021.6V1535.7ZM3334.3 1459.8V1661.8Q3334.3 1676.9 3339.6 1683.2Q3344.9 1689.5 3356.1 1689.5Q3363.1 1689.5 3367.2 1688.5Q3371.3 1687.5 3376.9 1685.2L3374.6 1699.7Q3370.3 1701.7 3364.9 1702.8Q3359.4 1704.0 3352.8 1704.0Q3335.3 1704.0 3326.6 1693.9Q3317.8 1683.9 3317.8 1662.4V1459.8ZM3460.9 1489.9V1657.1Q3460.9 1672.7 3468.3 1680.7Q3475.7 1688.8 3489.9 1688.8Q3499.1 1688.8 3506.2 1685.7Q3513.3 1682.6 3518.9 1676.6L3525.2 1690.1Q3518.9 1696.4 3509.4 1700.2Q3499.8 1704.0 3487.9 1704.0Q3475.1 1704.0 3465.2 1699.2Q3455.3 1694.4 3449.8 1684.5Q3444.4 1674.6 3444.4 1659.5V1494.5ZM3522.6 1535.7V1549.9H3411.4V1535.7ZM3646.1 1704.0Q3624.7 1704.0 3607.5 1693.8Q3590.4 1683.5 3580.6 1664.2Q3570.9 1644.9 3570.9 1618.2Q3570.9 1590.8 3581.1 1571.7Q3591.3 1552.5 3608.8 1542.5Q3626.3 1532.4 3647.8 1532.4Q3670.5 1532.4 3686.9 1544.6Q3703.2 1556.8 3708.8 1578.3L3706.8 1579.9V1459.8H3723.3V1700.7H3708.5L3707.5 1654.8L3709.5 1654.2Q3706.5 1670.0 3697.4 1681.2Q3688.4 1692.5 3675.0 1698.2Q3661.6 1704.0 3646.1 1704.0ZM3648.1 1689.5Q3665.6 1689.5 3678.8 1680.7Q3692.0 1672.0 3699.4 1655.5Q3706.8 1639.0 3706.8 1616.9Q3706.8 1595.1 3699.4 1579.4Q3692.0 1563.8 3679.0 1555.4Q3665.9 1546.9 3648.8 1546.9Q3620.4 1546.9 3603.9 1566.1Q3587.4 1585.2 3587.4 1618.2Q3587.4 1651.2 3603.7 1670.3Q3620.1 1689.5 3648.1 1689.5Z"/>
+  </defs>
+</svg>
+
+<svg class="wm" viewBox="100 345 2770 1480" aria-hidden="true" focusable="false"><use href="#nt"/></svg>
+<svg class="wm wm-lit" id="wm-lit" viewBox="100 345 2770 1480" aria-hidden="true" focusable="false"><use href="#nt"/></svg>
+<div class="intro" id="intro" hidden aria-hidden="true"></div>
+<div class="tl" id="tl" hidden role="dialog" aria-modal="true" aria-label="Trailer"><div class="tl-box"><div class="tl-frame" id="tl-frame"></div><div class="tl-bar"><span id="tl-title"></span><a id="tl-yt" target="_blank" rel="noopener">watch on youtube ↗</a><button type="button" id="tl-close">close ✕</button></div></div></div>
+<div class="page">
+  <header>
+    <a class="brand" href="#home" aria-label="NT Post Ltd, home">
+      <svg class="logo" viewBox="100 340 3640 1480" role="img" aria-label="NT Post Ltd"><use href="#nt" class="nt"/><use href="#pl" class="pl"/></svg>
+    </a>
+    <nav aria-label="Pages">
+      <a href="#credits" data-view="credits">work</a>
+      <a href="#services" data-view="services">services</a>
+      <a href="#about" data-view="about">about</a>
+      <a href="#contact" data-view="contact">contact</a>
+    </nav>
+    <div class="ext">
+    </div>
+  </header>
+
+  <main>
+    <section class="view" id="v-home" aria-label="Home" hidden>
+      <div class="home">
+        <div class="hero">
+          <div class="hero-copy">
+            <h1>flame vfx<br>and online for<br>television &amp; film</h1>
+            <div class="hero-links"><a class="cta" href="#credits">see the work →</a><a class="cta" href="#contact">contact →</a></div>
+          </div>
+          <div class="roller" id="roller" aria-label="Credits, rolling">
+            <div class="roll" id="roll"></div>
+          </div>
+        </div>
+        <div class="delivered"><h2>delivered for</h2><p id="nets"></p></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-credits" aria-label="Credits" hidden>
+      <div class="filters" id="filters" role="group" aria-label="Filter by genre"></div>
+      <div class="gallery">
+        <div class="slider">
+          <div class="strip" id="strip-wrap" aria-label="All credits"><div class="strip-inner" id="strip"></div></div>
+        </div>
+        <div class="info" aria-live="polite">
+          <div class="cvid" id="c-vid" hidden></div>
+          <h1 id="c-ttl"></h1>
+          <div class="line" id="c-line"></div>
+          <button type="button" class="play" id="c-play" hidden><span class="tri" aria-hidden="true"></span>watch the trailer</button>
+          <p id="c-about"></p>
+          <dl class="crew" id="c-crew"></dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="v-services" aria-label="Services" hidden>
+      <div class="biz">
+        <div class="biz-head">
+          <h1>Flame VFX and online for television &amp; film</h1>
+        </div>
+        <div class="svc-list">
+          <details class="svc"><summary><h2>vfx</h2></summary><div class="sub-svc">
+            <h3>paint &amp; clean-up</h3><p>Rig, wire and crew removal, period and continuity clean-up, beauty work.</p>
+            <h3>compositing &amp; screens</h3><p>Split screens, screen and signage inserts, sky and set extensions, stabilisation and retimes.</p>
+          </div></details>
+          <details class="svc"><summary><h2>online &amp; conform</h2></summary><p>Conform, online and deliverables.</p></details>
+          <details class="svc"><summary><h2>titles &amp; credits</h2></summary><p>Main titles, captions and end rollers built to spec.</p></details>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="view" id="v-about" aria-label="About" hidden>
+      <div class="about">
+        <div class="copy">
+          <h1>NT Post Ltd<br><span class="sub">VFX, online, titles and conform for television &amp; film</span></h1>
+          <p>NT Post is a Flame VFX and online company, founded in 2026 by Nick Timms, a Flame artist and senior online editor with twenty years in post production.</p>
+          <p>Nick has worked on BAFTA- and Emmy-winning shows for broadcasters and streaming platforms, at Encore, Technicolor, Picture Shop and The Farm Soho. Along the way he has collaborated closely with renowned writers, directors, producers, VFX supervisors and post producers, shaping the visual effects, titles and credits on their shows.</p>
+          <div class="founder-links"><span>nick timms</span><a href="https://www.imdb.com/name/nm3327903/" target="_blank" rel="noopener">imdb ↗</a><a href="https://www.linkedin.com/in/nick-timms-0479931a/" target="_blank" rel="noopener">linkedin ↗</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="v-contact" aria-label="Contact" hidden>
+      <div class="contact">
+        <div class="row">
+          <a class="big" id="mail" href="mailto:nick@ntpost.co.uk">nick@ntpost.co.uk</a>
+          <button type="button" class="copybtn" id="copy">copy address</button>
+        </div>
+        <div class="row"><a class="big" href="tel:+447725665028">07725 665028</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="svcline">vfx · online · titles · conform</p>
+    <div>© 2026 NT Post Ltd</div>
+    <p class="legal">NT Post Ltd · Registered in England &amp; Wales · Company No. 17481188<br>Registered office: Foulden Vale, Moat Lane, Prestwood, Great Missenden, Buckinghamshire, HP16 9DF</p>
+  </footer>
+</div>
+
+<script>
+// [title, production, broadcaster, years, genre, about, [c0, c1, c2]]
+const SHOWS = {
+  recent: [
+    ["MobLand S2", "Paramount Television Studios / 101 Studios", "Paramount+", "2026", "crime drama", "The Harrigans, a powerful London crime family, fight to hold their empire together, with fixer Harry Da Souza caught in the middle.", ["#1a1410", "#8a5a2b", "#c9a46a"]],
+    ["The Other Bennet Sister", "Bad Wolf / Sony Pictures Television", "BBC One / BritBox", "2026", "period drama", "Mary, the overlooked middle sister from Pride and Prejudice, steps out of her family's shadow to find a life of her own.", ["#1d2a33", "#6f8fa3", "#e2c9a4"]],
+    ["All Creatures Great and Small S7", "Playground / All3Media", "Channel 5 / PBS", "2026", "period drama", "Life, love and animal emergencies at a country veterinary practice in the Yorkshire Dales.", ["#2f3a24", "#8b8a52", "#d9c48f"]],
+    ["All Creatures Great and Small", "Playground / All3Media", "Channel 5 / PBS", "2023–", "period drama", "Life, love and animal emergencies at a country veterinary practice in the Yorkshire Dales.", ["#2f3a24", "#8b8a52", "#d9c48f"]],
+    ["Prime Target", "New Regency / Scott Free Productions", "Apple TV+", "2025", "thriller", "A young maths prodigy closes in on a breakthrough about prime numbers and finds powerful people want him stopped.", ["#0e1a26", "#355e7a", "#c47a3a"]],
+    ["The Rats: A Witcher Tale", "Netflix Studios / Film Afrika", "Netflix", "2025", "fantasy film", "A spin-off from The Witcher following a gang of young outlaws, released alongside the show's fourth season.", ["#1b120c", "#6b3f22", "#b9792e"]],
+    ["The Hack", "ITV Studios / AC Chapter One / One Shoe Films", "ITV / Stan", "2025", "drama", "The phone-hacking scandal, told through the journalist and the detective who pursued it.", ["#15181c", "#4b5560", "#a8946a"]],
+    ["The Burning Girls", "Buccaneer Media / VIS", "Paramount+", "2023", "supernatural thriller", "A vicar and her daughter move to a Sussex village and uncover its history of martyrdom and missing girls.", ["#140b0a", "#5e1d17", "#c0743b"]],
+    ["Big Mood S2", "Dancing Ledge Productions", "Channel 4", "2026", "comedy-drama", "Two best friends navigate their late twenties while one of them lives with bipolar disorder.", ["#2a1530", "#b44e7a", "#f0b7a4"]],
+    ["Riot Women", "Drama Republic", "BBC One / BritBox", "2025", "comedy-drama", "Sally Wainwright's story of a group of women in midlife who form a rock band.", ["#160f1c", "#a3245f", "#2f7f7a"]],
+    ["Best Interests", "Chapter One Pictures / One Shoe Films", "BBC One", "2023", "drama", "Jack Thorne's drama about parents divided over the care of their seriously ill daughter.", ["#1d2226", "#6f8794", "#c9b9a0"]],
+    ["Three Little Birds", "Douglas Road Productions / Tiger Aspect", "ITV", "2023", "period drama", "Lenny Henry's story of three women who leave Jamaica for England in the Windrush era.", ["#132a2c", "#3f7c78", "#d98a5f"]],
+    ["It Gets Worse", "A24 / Crave", "Channel 4 / Crave", "2026", "comedy", "Leo Reich's comedy series, made with A24.", ["#0b1110", "#2d6b4f", "#c03a8a"]]
+  ],
+  earlier: [
+    ["Chernobyl", "Sister Pictures / The Mighty Mint / Word Games", "Sky Atlantic / HBO", "2019", "historical drama", "The 1986 nuclear disaster and the people who tried to contain it and uncover the truth.", ["#0f1614", "#3c5a52", "#9aa58a"]],
+    ["Luther", "BBC Drama Productions", "BBC One", "2010–2019", "crime drama", "DCI John Luther, a brilliant and self-destructive detective, takes on London's most dangerous killers.", ["#0b0f16", "#28405e", "#a33a3a"]],
+    ["The Wheel of Time", "Amazon MGM Studios / Sony Pictures Television", "Amazon Prime Video", "2021–2025", "fantasy", "Adapted from Robert Jordan's novels: a sorceress leads five young people on a journey that could save or break the world.", ["#0f1220", "#3a4f86", "#c9a35a"]],
+    ["Broadchurch", "Kudos Film & Television / Imaginary Friends", "ITV", "2013–2017", "crime drama", "The death of a boy turns a small Dorset town into the centre of a murder investigation.", ["#101a1f", "#3f6b78", "#c98a4a"]],
+    ["Happy Valley", "Lookout Point", "BBC / AMC+", "2014–2023", "crime drama", "Police sergeant Catherine Cawood holds the line in West Yorkshire's Calder Valley.", ["#141a16", "#4e6050", "#a7a98e"]],
+    ["Da Vinci's Demons", "Phantom Four Films / Adjacent Productions", "Starz / Fox", "2013–2015", "historical fantasy", "The young Leonardo da Vinci, inventor and rebel, in Renaissance Florence.", ["#1a120a", "#7a4b22", "#d1a35c"]],
+    ["Fate: The Winx Saga", "Archery Pictures", "Netflix", "2021–2022", "fantasy", "Teenage fairies learn to control their powers at a magical boarding school.", ["#120f22", "#4a3a8c", "#5fae8c"]],
+    ["Ripper Street", "Tiger Aspect Productions / Lookout Point", "BBC / Amazon Prime Video", "2012–2016", "period crime", "The detectives of Whitechapel's H Division in the years after the Ripper murders.", ["#17110c", "#5c4630", "#a8865c"]],
+    ["My Mad Fat Diary", "Tiger Aspect Productions", "E4", "2013–2015", "comedy-drama", "Rae, a teenager in 1990s Lincolnshire, rebuilds her life after a stay in a psychiatric hospital.", ["#2a1a1a", "#c0607a", "#e8c25a"]],
+    ["War & Peace", "Lookout Point", "BBC One", "2016", "period drama", "Andrew Davies' adaptation of Tolstoy's novel of Russian families through the Napoleonic wars.", ["#141822", "#5a6f8f", "#d8c8a8"]],
+    ["Gentleman Jack", "Lookout Point", "BBC / HBO", "2019–2022", "period drama", "Anne Lister, landowner and diarist, defies convention in 1830s Halifax.", ["#16140f", "#5a5a3c", "#b39a6a"]],
+    ["Alex Rider", "Eleventh Hour Films / Sony Pictures Television", "Amazon Prime Video / IMDb TV", "2020–2024", "spy thriller", "A London teenager is recruited by a secret intelligence agency. From Anthony Horowitz's novels.", ["#0a1220", "#1f5e8a", "#7fc6d8"]],
+    ["The Man Who Fell to Earth", "Secret Hideout / CBS Studios / StudioCanal", "Showtime", "2022", "science fiction", "An alien arrives on Earth on a mission to save his own world, and needs a scientist's help.", ["#0b1416", "#1f6a72", "#d8732e"]],
+    ["Vienna Blood", "Endor Productions / MR Film", "BBC Two / ORF / ZDF", "2019–", "period crime", "A young doctor and a police detective solve murders in 1900s Vienna.", ["#170d10", "#6a2335", "#c9a35a"]],
+    ["The Spanish Princess", "New Pictures / Playground / All3Media", "Starz", "2019–2020", "period drama", "Catherine of Aragon's path from Spanish princess to Queen of England.", ["#180a0b", "#8a2a2a", "#d4a84e"]],
+    ["Chloe", "Mam Tor Productions / Amazon Studios", "BBC One / Prime Video", "2022", "psychological thriller", "After her friend's death, a young woman slips into the dead woman's world under a false identity.", ["#1b1d24", "#5e6a8c", "#e8c3c8"]],
+    ["Becoming Elizabeth", "The Forge", "Starz", "2022", "period drama", "The teenage Elizabeth Tudor survives the politics of the court after Henry VIII's death.", ["#0f140f", "#2f4a32", "#b8954a"]],
+    ["Little Birds", "Warp Films", "Sky Atlantic", "2020", "period drama", "Inspired by Anaïs Nin's stories, set in Tangier in 1955.", ["#14201f", "#2f8a86", "#e3a07a"]]
+  ]
+};
+const ROLES = { "MobLand S2": "VFX artist" };
+// official trailer for each credit: YouTube video id, from the broadcaster or studio channel
+const TRAILERS = {
+  "MobLand S2": "VvYl1a1Px5Y",
+  "The Other Bennet Sister": "BvVJ7qku5Gw",
+  "All Creatures Great and Small S7": "Bdi62nkEW8Y",
+  "All Creatures Great and Small": "gYU4BgwqHJ0",
+  "Prime Target": "_HdOGSOu1kQ",
+  "The Hack": "AShPTasA7eI",
+  "The Burning Girls": "gEmInTD1W3k",
+  "Big Mood S2": "oobn08Ubttc",
+  "Riot Women": "Js9KPL49W3g",
+  "Best Interests": "1WLEPGK2hYg",
+  "Three Little Birds": "odtykY5l0KE",
+  "Chernobyl": "s9APLXM9Ei8",
+  "Luther": "rU1kQI3HuOA",
+  "The Wheel of Time": "qk0D4OV95bQ",
+  "Broadchurch": "7hDUoHLmEMs",
+  "Happy Valley": "pBaaeeETR9o",
+  "Da Vinci's Demons": "LV5B0BLaII8",
+  "Fate: The Winx Saga": "YlNEvyjEWLQ",
+  "Ripper Street": "TKgs57diQQU",
+  "My Mad Fat Diary": "3tmqLvgUd-s",
+  "War & Peace": "H-BCmUeHE5c",
+  "Gentleman Jack": "RM1ka0JphHU",
+  "Alex Rider": "NemWoDrL3-g",
+  "The Man Who Fell to Earth": "iqM5UeQVRvI",
+  "Vienna Blood": "GTWka3LtiEA",
+  "The Spanish Princess": "xQp27JgzJpg",
+  "Chloe": "gGpsl6GZ43s",
+  "Becoming Elizabeth": "TUypHjzmXBE",
+  "Little Birds": "FjYxpwVom4k"
+};
+// series worked on, and the years of that work (from IMDb, Oct 2026)
+const WORK = {
+  "All Creatures Great and Small": ["series 4–6", "2023–2025"],
+  "All Creatures Great and Small S7": ["series 7", "2026"],
+  "Prime Target": ["series 1", "2025"],
+  "The Hack": ["", "2025"],
+  "The Burning Girls": ["", "2023"],
+  "Riot Women": ["series 1", "2025"],
+  "Best Interests": ["", "2023"],
+  "Three Little Birds": ["", "2023"],
+  "Chernobyl": ["", "2019"],
+  "Luther": ["series 3–4", "2013–2015"],
+  "The Wheel of Time": ["series 3", "2025"],
+  "Broadchurch": ["series 3", "2017"],
+  "Happy Valley": ["series 3", "2023"],
+  "Da Vinci's Demons": ["series 1–3", "2013–2015"],
+  "Fate: The Winx Saga": ["series 2", "2022"],
+  "Ripper Street": ["series 3–5", "2014–2016"],
+  "My Mad Fat Diary": ["series 1–3", "2013–2015"],
+  "War & Peace": ["", "2016"],
+  "Gentleman Jack": ["series 2", "2022"],
+  "Alex Rider": ["series 1", "2020"],
+  "The Man Who Fell to Earth": ["series 1", "2022"],
+  "Vienna Blood": ["series 4", "2024"],
+  "The Spanish Princess": ["series 1", "2019"],
+  "Chloe": ["", "2022"],
+  "Becoming Elizabeth": ["series 1", "2022"],
+  "Little Birds": ["series 1", "2020"]
+};
+// apply IMDb years to the data so cards and captions agree
+[...SHOWS.recent, ...SHOWS.earlier].forEach(s => { if (WORK[s[0]]) s[3] = WORK[s[0]][1]; });
+const roleOf = t => ROLES[t] || "Flame artist & senior online editor";
+// director / writer / producer for the episodes worked on (from IMDb, Oct 2026)
+const CREW = {"All Creatures Great and Small": {"d": ["Andy Hay", "Stewart Svaasand", "Brian Percival"], "w": ["James Herriot", "Neil Jones", "Maxine Alderton"], "p": ["Yvonne Francas"], "sp": [], "ep": ["Colin Callender", "Rebecca Eaton", "Melissa Gallant", "Susanne Simpson", "Louise Pedersen", "David Swetman", "Sebastian Cardwell", "Sharon Moran", "Paul Testar", "Greg Barnett", "Ben Vanstone"]}, "Prime Target": {"d": ["Brady Hood"], "w": ["Steve Thompson", "Selina Lim", "Thomas Martin"], "p": ["Sarah-Jane Wheale"], "sp": ["Laura Hastings-Smith"], "ep": ["Marina Brackenbury", "Emma Broughton", "Laura Hastings-Smith", "Brady Hood", "Arnon Milchan", "Yariv Milchan", "Beth Pattinson", "Ed Rubin", "Michael Schaefer", "Ridley Scott", "Steve Thompson", "David W. Zucker"]}, "The Hack": {"d": ["Lewis Arnold"], "w": ["Jack Thorne", "Annalisa D'Innella"], "p": [], "sp": ["Abi Bach"], "ep": ["Lewis Arnold", "David Tennant", "Jack Thorne", "Joe Williams", "Patrick Spence", "Tamla Kari"]}, "The Burning Girls": {"d": ["Charles Martin"], "w": ["Hans Rosenfeldt", "Camilla Ahlgren", "C.J. Tudor"], "p": ["Oliver Kent"], "sp": [], "ep": ["Moreyba Bidessie", "Juan JC Acosta", "Kate Laffey", "Hans Rosenfeldt", "C.J. Tudor", "Richard Tulk-Hart", "Tony Wood"]}, "Riot Women": {"d": ["Amanda Brotchie", "Sally Wainwright"], "w": ["Sally Wainwright"], "p": ["Jessica Taylor"], "sp": [], "ep": ["Roanna Benn", "Jess O'Riordan", "Tanya Qureshi", "Robert Schildhouse", "Sally Wainwright"]}, "Best Interests": {"d": ["Michael Keillor"], "w": ["Jack Thorne"], "p": ["Jenny Frayn"], "sp": [], "ep": ["Jack Thorne", "Michael Keillor", "Sharon Horgan", "Michael Sheen", "Sophie Gardiner", "Toby Bentley", "Lucy Richer"]}, "Three Little Birds": {"d": ["Darcia Martin", "Yero Timi-Biu", "Charles McDougall"], "w": ["Lenny Henry", "Avril E. Russell", "Carol Russell"], "p": ["Stella Nwimo"], "sp": [], "ep": ["Lucy Bedford", "Kate Crowe", "Russell T. Davies", "Angela Ferreira", "Lenny Henry", "Nana Hughes", "Charles McDougall", "Diederick Santer"]}, "Chernobyl": {"d": ["Johan Renck"], "w": ["Craig Mazin"], "p": ["Sanne Wohlenberg"], "sp": [], "ep": ["Jane Featherstone", "Craig Mazin", "Anne Mensah", "Gabriel Silver", "Carolyn Strauss"]}, "Luther": {"d": ["Sam Miller", "Farren Blackburn"], "w": ["Neil Cross"], "p": ["Neil Cross", "Claire Bennett", "Marcus Wilson"], "sp": [], "ep": ["Phillippa Giles", "Elizabeth Kilgarriff"]}, "The Wheel of Time": {"d": ["Marta Cunningham", "Thomas Napper", "Ciaran Donnelly"], "w": ["Rammy Park", "Rafe Judkins", "Robert Jordan"], "p": ["David Frew", "Holger Reibiger"], "sp": [], "ep": ["Ciaran Donnelly", "Ted Field", "Justine Juel Gillmer", "Dave Hill", "Rafe Judkins", "Marigo Kehoe", "Larry Mondragon", "Rosamund Pike", "Rick Selvage", "Mike Weber"]}, "Broadchurch": {"d": ["Paul Andrew Williams", "Daniel Nettheim", "Lewis Arnold"], "w": ["Chris Chibnall"], "p": ["Dan Winch"], "sp": [], "ep": ["Chris Chibnall", "Jane Featherstone"]}, "Happy Valley": {"d": ["Patrick Harkins", "Sally Wainwright", "Fergus O'Brien"], "w": ["Sally Wainwright"], "p": ["Jessica Taylor"], "sp": [], "ep": ["Rebecca Ferguson", "Ben Irving", "Will Johnston", "Sarah Lancashire", "Faith Penhale", "Sally Wainwright"]}, "Da Vinci's Demons": {"d": ["Peter Hoar", "Colin Teague", "Mark Everest"], "w": ["David S. Goyer", "Jennifer Yale", "Kevin McManus"], "p": ["Tom Riley", "Joshua Throne", "Matthew Bouch", "Marco Ramirez"], "sp": [], "ep": ["David S. Goyer", "Julie Gardner", "Jane Tranter", "Amy Berg", "Matthew Bouch", "John Shiban", "Rose Lam", "Brian Nelson", "Lee Morris"]}, "Fate: The Winx Saga": {"d": ["Edward Bazalgette", "Sallie Aprahamian", "David Moore"], "w": ["Gregory Locklear", "Iginio Straffi", "Brian Young"], "p": ["Macdara Kelleher", "John Keville"], "sp": [], "ep": ["Cristiana Buzzelli", "Judy Counihan", "Joanne Lee", "Lis Steele", "Kris Thykier", "Brian Young"]}, "Ripper Street": {"d": ["Anthony Byrne", "Luke Watson", "Andy Wilson"], "w": ["Richard Warlow", "Toby Finlay", "Rachel Bennette"], "p": ["Lucy Dyke", "John Rushton", "Joe Donaldson"], "sp": [], "ep": ["Will Gould", "Richard Warlow", "Ed Guiney", "Andrew Lowe", "Martin Backlund", "Chris Bird", "Frith Tiplady", "Justine Vaughan", "Saul Venit", "Jason Ropell", "Stephen Smallwood", "Polly Hill", "Simon Vaughan"]}, "My Mad Fat Diary": {"d": ["Alex Winckler", "Tim Kirkby", "Luke Snellin"], "w": ["Tom Bidwell", "Rae Earl", "George Kay"], "p": ["Marianne Buckland", "Matthew Bouch", "Jules Hussey"], "sp": [], "ep": ["Roanna Benn", "Jude Liknaitzky", "Will Gould", "Greg Brenman", "Liz Lewin"]}, "War & Peace": {"d": ["Tom Harper"], "w": ["Andrew Davies", "Leo Tolstoy"], "p": ["Julia Stannard"], "sp": [], "ep": ["Andrew Davies", "Bethan Jones", "Faith Penhale", "Simon Vaughan", "Robert Walak", "Harvey Weinstein"]}, "Gentleman Jack": {"d": ["Fergus O'Brien", "Edward Hall", "Amanda Brotchie"], "w": ["Sally Wainwright", "Anne Lister", "Jill Liddington"], "p": ["Stella Merz"], "sp": ["Phil Collinson"], "ep": ["Ben Irving", "Will Johnston", "Suranne Jones", "Faith Penhale", "Sally Wainwright"]}, "Alex Rider": {"d": ["Christopher Smith", "Andreas Prochaska"], "w": ["Guy Burt", "Anthony Horowitz"], "p": ["Mat Chaplin"], "sp": [], "ep": ["Guy Burt", "Paula Cuddy", "Nicole Finnan", "Wayne Garvie", "Jill Green", "Eve Gutierrez", "Anthony Horowitz", "Andreas Prochaska"]}, "The Man Who Fell to Earth": {"d": ["Alex Kurtzman", "Olatunde Osunsanmi", "Joss Agnew"], "w": ["Jenny Lumet", "Alex Kurtzman", "Walter Tevis"], "p": ["Adrian Kelly", "Helen Shang", "Bill Wolkoff", "Stuart Sutherland"], "sp": [], "ep": ["Rola Bauer", "Carl Beverly", "Françoise Guyonnet", "John Hlavin", "Heather Kadin", "Alex Kurtzman", "Jenny Lumet", "Sarah Timberman", "Tim Halkin"]}, "Vienna Blood": {"d": ["Umut Dag"], "w": ["Steve Thompson", "Frank Tallis"], "p": ["Oliver Auspitz", "Andreas Kamm", "Catrin Strasser", "Jez Swimer"], "sp": [], "ep": ["Carlo Dusi", "Rodrigo Herrera Ibarguengoytia"]}, "The Spanish Princess": {"d": ["Stephen Woolfenden", "Lisa Clarke", "Daina Reid"], "w": ["Emma Frost", "Matthew Graham", "Philippa Gregory"], "p": ["Andrea Dewsbery"], "sp": [], "ep": ["Colin Callender", "Emma Frost", "Matthew Graham", "Charlie Hampton", "Scott Huff", "Charles Pattinson"]}, "Chloe": {"d": ["Alice Seabright", "Amanda Boyle"], "w": ["Alice Seabright", "Kayleigh Llewellyn", "Poppy Cogan"], "p": ["Joanna Crow"], "sp": [], "ep": ["Tally Garner", "Ben Irving", "Morven Reid", "Alice Seabright"]}, "Becoming Elizabeth": {"d": ["Udayan Prasad", "Justin Chadwick", "Catherine Morshead"], "w": ["Anya Reiss", "Emily Ballou", "Anna Jordan"], "p": ["Lisa Osborne"], "sp": [], "ep": ["George Ormond", "Anya Reiss"]}, "Little Birds": {"d": ["Stacie Passon"], "w": ["Sophia Al-Maria", "Stacey Gregg", "Ruth McCance"], "p": ["Peter Carlton", "Ruth McCance"], "sp": [], "ep": ["Peter Carlton", "Mark Herbert", "Kara Manley", "Ruth McCance", "Stacie Passon", "Peter Welter Soler"]}, "MobLand S2": {"d": ["Guy Ritchie", "Lawrence Gough", "Zetna Fuentes"], "w": ["Ronan Bennett", "Jez Butterworth", "Esther Watson"], "p": ["Peter Heslop"], "sp": [], "ep": ["Ivan Atkinson", "Dean Baker", "Ron Burkle", "Jez Butterworth", "David Glasser", "Tom Hardy", "David Hutkin", "Guy Ritchie", "Bob Yari", "Keith Cox"]}, "The Other Bennet Sister": {"d": ["Jennifer Sheridan", "Asim Abbasi"], "w": ["Sarah Quintrell", "Janice Hadlow", "Maddie Dai"], "p": ["John Pocock"], "sp": [], "ep": ["Kate Crowther", "Rebecca Ferguson", "Janice Hadlow", "Becca Kinder", "Dan McCulloch", "Sarah Quintrell", "Jane Tranter", "Jess O'Riordan"]}, "The Rats: A Witcher Tale": {"d": ["Mairzee Almas"], "w": ["Haily Hall", "Lauren Schmidt Hissrich"], "p": ["Michelle Camp", "Tera Ragan", "Marisa Sonemann-Turner", "Rudi Van As"], "sp": [], "ep": ["Tomasz Bagiński", "Jason F. Brown", "Sean Daniel", "Haily Hall", "Sasha Harris", "Lauren Schmidt Hissrich", "Matt McInnis", "Matthew O'Toole", "Jaroslaw Sawko"]}, "Big Mood S2": {"d": ["Rebecca Asher"], "w": ["Camilla Whitehill"], "p": ["Georgie Fallon"], "sp": [], "ep": ["Lotte Beasley Mestriner", "Laurence Bowen", "Chris Carey"]}, "It Gets Worse": {"d": ["Mounia Akl"], "w": ["Leo Reich", "Jenna Al-Ansari"], "p": ["Sam Pinnell"], "sp": [], "ep": ["Leo Reich"]}};
+CREW["All Creatures Great and Small S7"] = CREW["All Creatures Great and Small"];
+// credits made through NT Post Ltd, listed first in their own group
+const NTPOST = new Set(["MobLand S2", "All Creatures Great and Small S7"]);
+// newest first, by the latest year of each credit, then the earliest
+const yrs = y => (y.match(/\d{4}/g) || ["0"]).map(Number);
+const ALL = [...SHOWS.recent, ...SHOWS.earlier].sort((a, b) => {
+  const A = yrs(a[3]), B = yrs(b[3]);
+  return (NTPOST.has(b[0]) - NTPOST.has(a[0])) || (Math.max(...B) - Math.max(...A)) || (Math.min(...B) - Math.min(...A)) || a[0].localeCompare(b[0]);
+});
+const $ = id => document.getElementById(id);
+const paint = (n, c) => { n.style.setProperty("--c0", c[0]); n.style.setProperty("--c1", c[1]); n.style.setProperty("--c2", c[2]); };
+const firstYear = y => y.split("–")[0];
+let cur = 0;
+
+const strip = $("strip"); const thumbs = []; const heads = {};
+ALL.forEach((s, i) => {
+  const grp = NTPOST.has(s[0]) ? "nt" : "nick";
+  if (!heads[grp]) { const hd = document.createElement("div"); hd.className = "grp"; hd.textContent = grp === "nt" ? "nt post ltd" : "nick timms · previous credits"; strip.append(hd); heads[grp] = hd; }
+  const b = document.createElement("button"); b.type = "button"; b.className = "thumb"; b.dataset.grp = grp;
+  b.setAttribute("aria-label", `${s[0]}, ${s[3]}`);
+  const t = document.createElement("span"); t.textContent = s[0];
+  const y = document.createElement("small"); y.textContent = s[3];
+  b.append(t, y);
+  b.addEventListener("click", () => { show(i, true); playInline(i); });
+  b.addEventListener("mouseenter", () => { if (playing === null) show(i, true); });
+  strip.append(b); thumbs.push(b);
+});
+
+// trailers play inline above the credit; while one plays, hovering the list leaves it alone
+let playing = null;
+function playInline(i) {
+  const id = TRAILERS[ALL[i][0]], v = $("c-vid");
+  if (!id) { stopVid(); return; }
+  if (playing === i && v.firstChild) return;
+  v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="${ALL[i][0].replace(/"/g, "&quot;")} trailer" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe><button type="button" class="cvid-x" aria-label="Close trailer">close ✕</button>`;
+  v.querySelector(".cvid-x").addEventListener("click", stopVid);
+  v.hidden = false; playing = i; $("c-play").hidden = true;
+}
+function stopVid() {
+  const v = $("c-vid"); v.innerHTML = ""; v.hidden = true;
+  const was = playing; playing = null;
+  if (was !== null) $("c-play").hidden = !TRAILERS[ALL[cur][0]];
+}
+function render(i) {
+  if (playing !== null && playing !== i) stopVid();
+  const [title, prod, bc, years, genre, about] = ALL[i];
+  $("c-ttl").textContent = title;
+  $("c-line").innerHTML = "";
+  const t = document.createElement("span"); t.className = "role"; t.textContent = roleOf(title);
+  const w = WORK[title] && WORK[title][0] && !/\sS\d/.test(title) ? ` · ${WORK[title][0]}` : "";
+  const rest = document.createElement("span"); rest.textContent = `${w} · ${genre} · ${bc} · ${years}`;
+  $("c-line").append(t, rest);
+  $("c-play").hidden = !TRAILERS[title] || playing === i;
+  $("c-about").textContent = about + (prod && prod !== "—" ? ` ${prod}.` : "");
+  const cr = CREW[title] || {}, dl = $("c-crew"); dl.innerHTML = "";
+  // writer-directors first, then by number of episodes directed (the order IMDb gave)
+  const dirs = (cr.d || []).map((n, i) => [n, i]).sort((a, b) => ((cr.w || []).includes(b[0]) - (cr.w || []).includes(a[0])) || a[1] - b[1]).map(x => x[0]);
+  // executive producers: the show's writers and directors first, then by episodes credited
+  const creative = new Set([...(cr.w || []), ...(cr.d || [])]);
+  const eps = (cr.ep || []).map((n, i) => [n, i]).sort((a, b) => (creative.has(b[0]) - creative.has(a[0])) || a[1] - b[1]).map(x => x[0]);
+  [["director", dirs], ["writer", cr.w], ["producer", cr.p], ["series producer", cr.sp], ["executive producer", eps]].forEach(([k, v]) => {
+    if (!v || !v.length) return;
+    const dt = document.createElement("dt"); dt.textContent = k + (v.length > 1 ? "s" : "");
+    const dd = document.createElement("dd");
+    const SHOW = 6;
+    if (v.length > SHOW + 1) {
+      dd.textContent = v.slice(0, SHOW).join(", ") + ", ";
+      const more = document.createElement("button"); more.type = "button"; more.className = "more";
+      more.textContent = `+ ${v.length - SHOW} more`;
+      more.addEventListener("click", () => { dd.textContent = v.join(", "); });
+      dd.append(more);
+    } else dd.textContent = v.join(", ");
+    dl.append(dt, dd);
+  });
+}
+function show(i, fromStrip) {
+  cur = (i + ALL.length) % ALL.length;
+  render(cur);
+  thumbs.forEach((b, k) => b.setAttribute("aria-current", String(k === cur)));
+  const tb = thumbs[cur], sw = $("strip-wrap");
+  if (!fromStrip) sw.scrollTop = tb.offsetTop - (sw.clientHeight - tb.offsetHeight) / 2;
+}
+// hover near the top or bottom of the strip to scroll it
+(() => {
+  const sw = $("strip-wrap"), ZONE = 90, MAX = 9; let speed = 0, raf = 0;
+  const step = () => { if (!speed) { raf = 0; return; } sw.scrollTop += speed; raf = requestAnimationFrame(step); };
+  sw.addEventListener("mousemove", e => {
+    const r = sw.getBoundingClientRect(), y = e.clientY - r.top;
+    if (y < ZONE) speed = -MAX * (1 - y / ZONE);
+    else if (y > r.height - ZONE) speed = MAX * (1 - (r.height - y) / ZONE);
+    else speed = 0;
+    if (speed && !raf) raf = requestAnimationFrame(step);
+  });
+  sw.addEventListener("mouseleave", () => { speed = 0; });
+})();
+// step through the credits the current filter shows
+const visible = () => thumbs.map((b, k) => b.hidden ? -1 : k).filter(k => k >= 0);
+function stepBy(d) { const v = visible(); if (!v.length) return; const at = v.indexOf(cur); show(v[(at < 0 ? 0 : at + d + v.length) % v.length]); }
+document.addEventListener("keydown", e => {
+  if ($("v-credits").hidden || e.target.closest("input, textarea, button.chip")) return;
+  if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); stepBy(-1); } if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); stepBy(1); }
+});
+
+// work filters, grouped from each credit's genre
+const GROUP = g => /period|historical/.test(g) ? "period" : /thriller|crime/.test(g) ? "crime & thriller" : /fantasy|science/.test(g) ? "fantasy & sci-fi" : /comedy/.test(g) ? "comedy" : "drama";
+const GROUPS = ["all", "period", "crime & thriller", "fantasy & sci-fi", "drama", "comedy"];
+const chips = GROUPS.map(g => {
+  const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.setAttribute("aria-pressed", String(g === "all"));
+  const n = g === "all" ? ALL.length : ALL.filter(s => GROUP(s[4]) === g).length;
+  b.textContent = `${g} ${n}`;
+  b.addEventListener("click", () => {
+    chips.forEach(c => c.setAttribute("aria-pressed", String(c === b)));
+    thumbs.forEach((t, k) => { t.hidden = g !== "all" && GROUP(ALL[k][4]) !== g; });
+    Object.entries(heads).forEach(([k, hd]) => { hd.hidden = !thumbs.some(t => t.dataset.grp === k && !t.hidden); });
+    const v = visible(); if (v.length && !v.includes(cur)) show(v[0]); else show(cur);
+  });
+  $("filters").append(b); return b;
+});
+
+function openWork(i) { chips[0].click(); go("credits"); try { history.replaceState(null, "", "#credits"); } catch (_) {} window.scrollTo(0, 0); show(i); }
+// home: the credit roll, two copies end to end so it loops without a jump
+(() => {
+  const roll = $("roll");
+  // only NT Post's own credits on the landing page; the founder's earlier work stays on the work page
+  const label = document.createElement("div"); label.className = "rlabel"; label.textContent = "nt post ltd · recent work"; roll.before(label);
+  [0].forEach(copy => ALL.forEach((s, i) => {
+    if (!NTPOST.has(s[0])) return;
+    const b = document.createElement("button"); b.type = "button"; b.className = "ri";
+    const r = document.createElement("span"); r.className = "rr"; r.textContent = roleOf(s[0]);
+    const t = document.createElement("span"); t.className = "rt"; t.textContent = s[0];
+    const m = document.createElement("span"); m.className = "rm"; m.textContent = `${s[2].split(" / ")[0]} · ${s[3]}`;
+    b.append(r, t, m); b.addEventListener("click", () => openWork(i)); roll.append(b);
+  }));
+  roll.classList.add("still");
+})();
+// home: the networks delivered for
+(() => {
+  const norm = n => /^BBC/.test(n) ? "BBC" : /Prime Video/.test(n) ? "Prime Video" : /^Sky/.test(n) ? "Sky" : n;
+  const count = {};
+  ALL.filter(s => NTPOST.has(s[0])).forEach(s => s[2].split(" / ").map(norm).forEach(n => { count[n] = (count[n] || 0) + 1; }));
+  const MAIN = ["BBC", "ITV", "Channel 4", "Channel 5", "Sky", "Netflix", "Prime Video", "Apple TV+", "HBO", "Paramount+", "Starz", "Showtime"];
+  $("nets").textContent = MAIN.filter(n => count[n]).join("  ·  ");
+})();
+
+// services: hold the heading at the centre of the closed list, so opening a service doesn't move it
+function lockHead() {
+  const vw = $("v-services"); if (vw.hidden) return;
+  const list = vw.querySelector(".svc-list"), head = vw.querySelector(".biz-head");
+  if (matchMedia("(max-width: 720px)").matches) { head.style.marginTop = "0px"; return; }
+  const open = [...list.querySelectorAll("details[open]")]; open.forEach(d => d.open = false);
+  const off = Math.max(0, (list.offsetHeight - head.offsetHeight) / 2);
+  open.forEach(d => d.open = true);
+  head.style.marginTop = off + "px";
+}
+window.addEventListener("resize", lockHead);
+// views
+const VIEWS = ["home", "credits", "services", "about", "contact"];
+window.addEventListener("hashchange", () => go(location.hash.slice(1)));
+function go(v) {
+  if (!VIEWS.includes(v)) v = "home";
+  VIEWS.forEach(n => $("v-" + n).hidden = n !== v);
+  if (v === "credits" && typeof show === "function") requestAnimationFrame(() => show(cur));
+  if (v === "services") requestAnimationFrame(lockHead);
+  document.querySelectorAll("nav a").forEach(a => { if (a.dataset.view === v) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => { const v = a.getAttribute("href").slice(1); if (VIEWS.includes(v)) { e.preventDefault(); go(v); try { history.replaceState(null, "", "#" + v); } catch (_) {} window.scrollTo(0, 0); } }));
+show(0, true);
+go(location.hash.slice(1));
+
+$("copy").addEventListener("click", () => {
+  const btn = $("copy"), addr = "nick@ntpost.co.uk";
+  const done = () => { btn.textContent = "copied"; setTimeout(() => btn.textContent = "copy address", 1800); };
+  try { navigator.clipboard.writeText(addr).then(done, () => getSelection().selectAllChildren($("mail"))); }
+  catch (e) { getSelection().selectAllChildren($("mail")); }
+});
+
+
+// official trailers on YouTube, played in the privacy-enhanced player only when someone asks for one
+(() => {
+  const btn = $("c-play"), tl = $("tl"), frame = $("tl-frame");
+  let last = null;
+  const close = () => { frame.innerHTML = ""; tl.hidden = true; document.body.style.overflow = ""; if (last) last.focus(); };
+  btn.addEventListener("click", () => playInline(cur));
+  $("tl-close").addEventListener("click", close);
+  tl.addEventListener("click", e => { if (e.target === tl) close(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !tl.hidden) close(); });
+})();
+
+// landing page light: eased cursor follow, slow ambient drift when idle or on touch screens
+(() => {
+  const lit = $("wm-lit"), wms = document.querySelectorAll(".wm");
+  if (!lit || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let tx = innerWidth * .62, ty = innerHeight * .45, x = tx, y = ty, last = -1e9, raf = 0;
+  addEventListener("pointermove", e => { if (e.pointerType !== "mouse") return; tx = e.clientX; ty = e.clientY; last = performance.now(); if (!raf) raf = requestAnimationFrame(tick); }, { passive: true });
+  function tick(t) {
+    raf = 0;
+    if (!document.body.classList.contains("on-home")) return;
+    if (t - last > 2500) { const s = t / 1000; tx = innerWidth * (.55 + .25 * Math.sin(s * .23)); ty = innerHeight * (.45 + .22 * Math.sin(s * .31 + 1.3)); }
+    x += (tx - x) * .07; y += (ty - y) * .07;
+    const r = lit.getBoundingClientRect();
+    lit.style.setProperty("--mx", (x - r.left) + "px"); lit.style.setProperty("--my", (y - r.top) + "px");
+    const px = (x / innerWidth - .5) * -18, py = (y / innerHeight - .5) * -12;
+    wms.forEach(w => w.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px))`);
+    raf = requestAnimationFrame(tick);
+  }
+  const homeOn = () => { const on = !$("v-home").hidden; document.body.classList.toggle("on-home", on); if (on && !raf) raf = requestAnimationFrame(tick); if (!on) wms.forEach(w => w.style.transform = ""); };
+  addEventListener("hashchange", homeOn); document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", () => setTimeout(homeOn, 0)));
+  homeOn();
+})();
+// landing intro: plays when someone arrives on the home page, once per visit
+(() => {
+  const el = $("intro"), v = location.hash.slice(1);
+  let seen = false; try { seen = sessionStorage.getItem("nt-intro") === "1"; } catch (_) {}
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if ((v && v !== "home") || seen || reduce || !el || !el.animate) return;
+  try { sessionStorage.setItem("nt-intro", "1"); } catch (_) {}
+  const NS = "http://www.w3.org/2000/svg";
+  const E = (t, a = {}) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
+  const svg = E("svg", { viewBox: "100 340 3640 1480" });
+  const nt = $("nt").cloneNode(true); nt.removeAttribute("id"); nt.setAttribute("class", "nt");
+  const pl = $("pl").cloneNode(true); pl.removeAttribute("id"); pl.setAttribute("class", "pl");
+  // soft-edged reveal masks: a feathered edge travels left to right
+  const defs = E("defs");
+  const feather = (id) => {
+    const g = E("linearGradient", { id, x1: "0", y1: "0", x2: "1", y2: "0" });
+    [["0", "1"], [".85", "1"], ["1", "0"]].forEach(([o, a]) => g.append(E("stop", { offset: o, "stop-color": "#fff", "stop-opacity": a })));
+    return g;
+  };
+  defs.append(feather("fe1"), feather("fe2"));
+  const mk = (id, fe) => { const m = E("mask", { id, maskUnits: "userSpaceOnUse", x: "0", y: "0", width: "4000", height: "2200" });
+    const r = E("rect", { x: "-5900", y: "0", width: "6000", height: "2200", fill: `url(#${fe})` }); m.append(r); return [m, r]; };
+  const [m1, r1] = mk("rv1", "fe1"), [m2, r2] = mk("rv2", "fe2");
+  r2.setAttribute("x", "-3600");
+  // one sheen of light across the letters
+  const sg = E("linearGradient", { id: "sheen", x1: "0", y1: "0", x2: "1", y2: "0" });
+  [["0", "0"], [".5", ".55"], ["1", "0"]].forEach(([o, a]) => sg.append(E("stop", { offset: o, "stop-color": "#fff", "stop-opacity": a })));
+  const cp = E("clipPath", { id: "ntc" }); cp.append(E("use", { href: "#nt" }));
+  defs.append(m1, m2, sg, cp);
+  const gNt = E("g", { mask: "url(#rv1)" }); gNt.append(nt);
+  const gPl = E("g", { mask: "url(#rv2)" }); gPl.append(pl);
+  const sheen = E("rect", { x: "-700", y: "300", width: "700", height: "1600", fill: "url(#sheen)" });
+  const gS = E("g", { "clip-path": "url(#ntc)" }); gS.append(sheen);
+  svg.append(defs, gNt, gS, gPl);
+  const cam = document.createElement("div"); cam.className = "cam"; cam.append(svg);
+  const line = document.createElement("div"); line.className = "line";
+  const stage = document.createElement("div"); stage.className = "stage"; stage.append(line, cam);
+  el.append(stage); el.hidden = false; document.body.classList.add("intro-on", "intro-hide");
+
+  const slow = "cubic-bezier(.22,.61,.36,1)", glide = "cubic-bezier(.45,0,.15,1)";
+  // the camera: one long, slow settle the whole time
+  cam.animate([{ transform: "scale(1.09) translateX(1.5%)" }, { transform: "scale(1) translateX(0)" }], { duration: 4200, easing: "cubic-bezier(.25,.1,.25,1)", fill: "forwards" });
+  // a hairline of light draws across first, then fades as the letters arrive
+  line.animate([{ transform: "scaleX(0)", opacity: 0 }, { opacity: 1, offset: .2 }, { transform: "scaleX(1)", opacity: .9, offset: .55 }, { transform: "scaleX(1)", opacity: 0 }],
+    { duration: 1800, delay: 150, easing: glide, fill: "forwards" });
+  const reveal = (r, d, dur) => r.animate([{ transform: "translateX(0)" }, { transform: "translateX(4700px)" }], { duration: dur, delay: d, easing: glide, fill: "forwards" });
+  reveal(r1, 550, 1700);
+  reveal(r2, 1450, 1300);
+  sheen.animate([{ transform: "translateX(0)" }, { transform: "translateX(3600px)" }], { duration: 1600, delay: 1700, easing: slow, fill: "forwards" });
+
+  let done = false;
+  const finish = (fast) => {
+    if (done) return; done = true;
+    [cam, line, r1, r2, sheen].forEach(n => n.getAnimations().forEach(a => a.finish()));
+    const to = document.querySelector(".brand .logo").getBoundingClientRect(), from = svg.getBoundingClientRect();
+    const s = to.width / from.width, dx = to.left - from.left, dy = to.top - from.top;
+    const dur = fast ? 450 : 1400;
+    stage.animate([{ transform: "translate(-50%, -50%)" }, { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${s})` }],
+      { duration: dur, easing: "cubic-bezier(.7,0,.2,1)", fill: "forwards" });
+    el.animate([{ backgroundColor: "rgba(255,255,255,1)" }, { backgroundColor: "rgba(255,255,255,0)" }], { duration: dur * .8, delay: dur * .25, easing: "ease", fill: "forwards" });
+    setTimeout(() => document.body.classList.remove("intro-hide"), dur * .45);
+    setTimeout(() => { document.body.classList.remove("intro-on"); el.remove(); }, dur + 30);
+  };
+  el.addEventListener("click", () => finish(true));
+  setTimeout(() => finish(false), 4100);
+})();
+</script>
+
+</body></html>
