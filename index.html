@@ -348,7 +348,6 @@ main, footer, nav, .ext { transition: opacity 1.1s ease, transform 1.4s cubic-be
             <div class="roll" id="roll"></div>
           </div>
         </div>
-        <div class="delivered"><h2>delivered for</h2><p id="nets"></p></div>
       </div>
     </section>
 
@@ -662,7 +661,7 @@ function openWork(i) { chips[0].click(); go("credits"); try { history.replaceSta
   const count = {};
   ALL.filter(s => NTPOST.has(s[0])).forEach(s => s[2].split(" / ").map(norm).forEach(n => { count[n] = (count[n] || 0) + 1; }));
   const MAIN = ["BBC", "ITV", "Channel 4", "Channel 5", "Sky", "Netflix", "Prime Video", "Apple TV+", "HBO", "Paramount+", "Starz", "Showtime"];
-  $("nets").textContent = MAIN.filter(n => count[n]).join("  ·  ");
+  if ($("nets")) $("nets").textContent = MAIN.filter(n => count[n]).join("  ·  ");
 })();
 
 // services: hold the heading at the centre of the closed list, so opening a service doesn't move it
