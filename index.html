@@ -1,4 +1,5 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><script>(() => { try { const v = location.hash.slice(1), seen = localStorage.getItem("nt-intro") === "1";
+  if ((!v || v === "home") && !seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("intro-in"); } catch (_) {} })();</script>
 <title>NT Post · Flame VFX and online for television &amp; film</title>
 <meta name="description" content="NT Post Ltd: Flame VFX and online for television & film. Founded by Nick Timms, a Soho-trained Flame artist and senior online editor whose credits include Chernobyl, Happy Valley and MobLand.">
 <link rel="canonical" href="https://ntpost.co.uk/">
@@ -297,6 +298,21 @@ body.on-home:not(.intro-on) .wm-lit { opacity: .16; }
 .callbtn { margin-top: 6px; font-size: 14px; font-weight: 400; color: #fff; background: var(--red); text-decoration: none; padding: 10px 20px; border-radius: 999px; }
 .callbtn:hover { background: #b52f34; }
 @media (max-width: 720px) { .usp { grid-template-columns: minmax(0, 1fr); gap: 18px; } .how ol { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero { min-height: 0; } }
+/* landing intro, in place: rack focus on the logo, headline lines rise and sharpen in turn, the rest follows */
+.hero h1 .ln { display: block; }
+@keyframes rack { 0% { opacity: 0; filter: blur(14px); transform: scale(1.06); } 55% { opacity: 1; filter: blur(2px); transform: scale(.995); } 100% { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes rise { from { opacity: 0; filter: blur(8px); transform: translateY(22px); } to { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+html.intro-in .brand .logo { transform-origin: 20% 60%; animation: rack .95s cubic-bezier(.22,.61,.36,1) both; }
+html.intro-in .hero h1 .ln { animation: rise .8s cubic-bezier(.16,1,.3,1) both; }
+html.intro-in .hero h1 .ln:nth-child(1) { animation-delay: .25s; }
+html.intro-in .hero h1 .ln:nth-child(2) { animation-delay: .35s; }
+html.intro-in .hero h1 .ln:nth-child(3) { animation-delay: .45s; }
+html.intro-in .cred, html.intro-in .hero-links { animation: fadein .6s ease .65s both; }
+html.intro-in .usp li { animation: fadein .6s ease both; }
+html.intro-in .usp li:nth-child(1) { animation-delay: .7s; } html.intro-in .usp li:nth-child(2) { animation-delay: .78s; }
+html.intro-in .usp li:nth-child(3) { animation-delay: .86s; } html.intro-in .usp li:nth-child(4) { animation-delay: .94s; }
+html.intro-in nav, html.intro-in .ext { animation: fadein .6s ease .3s both; }
 .legal { margin: 10px 0 0; font-size: 10px; line-height: 1.6; letter-spacing: 0.01em; color: #666666; text-transform: none; }
 
 @media (max-width: 720px) {
@@ -410,7 +426,7 @@ main, footer, nav, .ext { transition: opacity 1.1s ease, transform 1.4s cubic-be
       <div class="home">
         <div class="hero">
           <div class="hero-copy">
-            <h1>flame vfx<br>and online for<br>television &amp; film</h1>
+            <h1><span class="ln">flame vfx</span><span class="ln">and online for</span><span class="ln">television &amp; film</span></h1>
             <p class="cred">Nick's credits include <b>MobLand</b>, <b>Chernobyl</b>, <b>Happy Valley</b>, <b>The Wheel of Time</b>, <b>Gentleman Jack</b>, <b>Luther</b> and <b>Broadchurch</b>.</p>
             <div class="hero-links"><a class="cta" href="mailto:mail@ntpost.co.uk?subject=Call%20back%20request&amp;body=Hi%20Nick%2C%0A%0ACould%20you%20give%20me%20a%20call%20about%3A%20%0A%0ABest%20number%3A%20%0ABest%20time%3A%20">book a call →</a><a class="cta" href="#credits">see the work →</a></div>
           </div>
@@ -857,72 +873,14 @@ $("copy").addEventListener("click", () => {
   addEventListener("hashchange", homeOn); document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", () => setTimeout(homeOn, 0)));
   homeOn();
 })();
-// landing intro: plays when someone arrives on the home page, once per visit
+// landing intro: the logo racks into focus in place and the headline rises in, once per browser; the page is never covered
 (() => {
-  const el = $("intro"), v = location.hash.slice(1);
-  let seen = false; try { seen = localStorage.getItem("nt-intro") === "1" || sessionStorage.getItem("nt-intro") === "1"; } catch (_) {}
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if ((v && v !== "home") || seen || reduce || !el || !el.animate) return;
+  const root = document.documentElement;
+  if (!root.classList.contains("intro-in")) return;
   try { localStorage.setItem("nt-intro", "1"); } catch (_) {}
-  const NS = "http://www.w3.org/2000/svg";
-  const E = (t, a = {}) => { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); return n; };
-  const svg = E("svg", { viewBox: "100 340 3640 1480" });
-  const nt = $("nt").cloneNode(true); nt.removeAttribute("id"); nt.setAttribute("class", "nt");
-  const pl = $("pl").cloneNode(true); pl.removeAttribute("id"); pl.setAttribute("class", "pl");
-  // soft-edged reveal masks: a feathered edge travels left to right
-  const defs = E("defs");
-  const feather = (id) => {
-    const g = E("linearGradient", { id, x1: "0", y1: "0", x2: "1", y2: "0" });
-    [["0", "1"], [".85", "1"], ["1", "0"]].forEach(([o, a]) => g.append(E("stop", { offset: o, "stop-color": "#fff", "stop-opacity": a })));
-    return g;
-  };
-  defs.append(feather("fe1"), feather("fe2"));
-  const mk = (id, fe) => { const m = E("mask", { id, maskUnits: "userSpaceOnUse", x: "0", y: "0", width: "4000", height: "2200" });
-    const r = E("rect", { x: "-5900", y: "0", width: "6000", height: "2200", fill: `url(#${fe})` }); m.append(r); return [m, r]; };
-  const [m1, r1] = mk("rv1", "fe1"), [m2, r2] = mk("rv2", "fe2");
-  r2.setAttribute("x", "-3600");
-  // one sheen of light across the letters
-  const sg = E("linearGradient", { id: "sheen", x1: "0", y1: "0", x2: "1", y2: "0" });
-  [["0", "0"], [".5", ".55"], ["1", "0"]].forEach(([o, a]) => sg.append(E("stop", { offset: o, "stop-color": "#fff", "stop-opacity": a })));
-  const cp = E("clipPath", { id: "ntc" }); cp.append(E("use", { href: "#nt" }));
-  defs.append(m1, m2, sg, cp);
-  const gNt = E("g", { mask: "url(#rv1)" }); gNt.append(nt);
-  const gPl = E("g", { mask: "url(#rv2)" }); gPl.append(pl);
-  const sheen = E("rect", { x: "-700", y: "300", width: "700", height: "1600", fill: "url(#sheen)" });
-  const gS = E("g", { "clip-path": "url(#ntc)" }); gS.append(sheen);
-  svg.append(defs, gNt, gS, gPl);
-  const cam = document.createElement("div"); cam.className = "cam"; cam.append(svg);
-  const line = document.createElement("div"); line.className = "line";
-  const stage = document.createElement("div"); stage.className = "stage"; stage.append(line, cam);
-  el.append(stage); el.hidden = false; document.body.classList.add("intro-on", "intro-hide");
-
-  const slow = "cubic-bezier(.22,.61,.36,1)", glide = "cubic-bezier(.45,0,.15,1)";
-  // the camera: one long, slow settle the whole time
-  cam.animate([{ transform: "scale(1.09) translateX(1.5%)" }, { transform: "scale(1) translateX(0)" }], { duration: 2600, easing: "cubic-bezier(.25,.1,.25,1)", fill: "forwards" });
-  // a hairline of light draws across first, then fades as the letters arrive
-  line.animate([{ transform: "scaleX(0)", opacity: 0 }, { opacity: 1, offset: .2 }, { transform: "scaleX(1)", opacity: .9, offset: .55 }, { transform: "scaleX(1)", opacity: 0 }],
-    { duration: 1100, delay: 100, easing: glide, fill: "forwards" });
-  const reveal = (r, d, dur) => r.animate([{ transform: "translateX(0)" }, { transform: "translateX(4700px)" }], { duration: dur, delay: d, easing: glide, fill: "forwards" });
-  reveal(r1, 350, 1050);
-  reveal(r2, 900, 800);
-  sheen.animate([{ transform: "translateX(0)" }, { transform: "translateX(3600px)" }], { duration: 1000, delay: 1050, easing: slow, fill: "forwards" });
-
-  let done = false;
-  const finish = (fast) => {
-    if (done) return; done = true;
-    [cam, line, r1, r2, sheen].forEach(n => n.getAnimations().forEach(a => a.finish()));
-    const to = document.querySelector(".brand .logo").getBoundingClientRect(), from = svg.getBoundingClientRect();
-    const s = to.width / from.width, dx = to.left - from.left, dy = to.top - from.top;
-    const dur = fast ? 450 : 1000;
-    stage.animate([{ transform: "translate(-50%, -50%)" }, { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${s})` }],
-      { duration: dur, easing: "cubic-bezier(.7,0,.2,1)", fill: "forwards" });
-    el.animate([{ backgroundColor: "rgba(255,255,255,1)" }, { backgroundColor: "rgba(255,255,255,0)" }], { duration: dur * .8, delay: dur * .25, easing: "ease", fill: "forwards" });
-    setTimeout(() => document.body.classList.remove("intro-hide"), dur * .45);
-    setTimeout(() => { document.body.classList.remove("intro-on"); el.remove(); }, dur + 30);
-  };
-  el.addEventListener("click", () => finish(true));
-  ["keydown", "wheel", "touchstart"].forEach(t => addEventListener(t, () => finish(true), { once: true, passive: true }));
-  setTimeout(() => finish(false), 2500);
+  const end = () => root.classList.remove("intro-in");
+  ["keydown", "wheel", "touchstart", "pointerdown"].forEach(t => addEventListener(t, end, { once: true, passive: true }));
+  setTimeout(end, 1700);
 })();
 </script>
 
