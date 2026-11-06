@@ -261,6 +261,27 @@ body.on-home:not(.intro-on) .wm-lit { opacity: .16; }
 .cloud h2 { margin: 0 0 8px; font-size: 15px; font-weight: 400; color: var(--red); }
 .cloud p { margin: 0; font-size: 14px; font-weight: 300; line-height: 1.65; max-width: 60ch; }
 @media (max-width: 720px) { .cloud { grid-column: 1; } }
+/* draft: landing pitch, how it works, book a call */
+.hero { min-height: calc(100svh - 220px); padding-block: 12px 24px; }
+.hero h1 { white-space: normal; }
+.cred { margin: 0; font-size: 16px; font-weight: 300; line-height: 1.6; max-width: 40ch; }
+.cred b { font-weight: 400; }
+.usp { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px; align-self: center; }
+.usp li { display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid var(--ink); }
+.usp b { font-size: 15px; font-weight: 400; color: var(--red); }
+.usp span { font-size: 14px; font-weight: 300; line-height: 1.6; }
+.how { display: flex; flex-direction: column; gap: 16px; padding-top: 8px; }
+.how h2, .who h2 { margin: 0; font-size: 13px; font-weight: 500; }
+.how ol { margin: 0; padding: 0; list-style: none; counter-reset: h; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.how li { counter-increment: h; display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; font-weight: 300; line-height: 1.55; }
+.how li::before { content: counter(h); font-size: 12px; color: var(--red); font-variant-numeric: tabular-nums; }
+.how li b { font-weight: 400; font-size: 14px; }
+.who { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 32px; padding-top: 18px; border-top: 1px solid var(--ink); }
+.who p { margin: 0; font-size: clamp(16px, 1.7vw, 19px); font-weight: 300; line-height: 1.55; max-width: 60ch; }
+.who .cta { color: var(--red); }
+.callbtn { margin-top: 6px; font-size: 14px; font-weight: 400; color: #fff; background: var(--red); text-decoration: none; padding: 10px 20px; border-radius: 999px; }
+.callbtn:hover { background: #b52f34; }
+@media (max-width: 720px) { .usp { grid-template-columns: minmax(0, 1fr); gap: 18px; } .how ol { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero { min-height: 0; } }
 .legal { margin: 10px 0 0; font-size: 10px; line-height: 1.6; letter-spacing: 0.01em; color: #8a8a8a; text-transform: none; }
 
 @media (max-width: 720px) {
@@ -375,11 +396,19 @@ main, footer, nav, .ext { transition: opacity 1.1s ease, transform 1.4s cubic-be
         <div class="hero">
           <div class="hero-copy">
             <h1>flame vfx<br>and online for<br>television &amp; film</h1>
-            <div class="hero-links"><a class="cta" href="#credits">see the work →</a><a class="cta" href="#contact">contact →</a></div>
+            <p class="cred">Nick's credits include <b>MobLand</b>, <b>Chernobyl</b>, <b>Happy Valley</b>, <b>The Wheel of Time</b>, <b>Gentleman Jack</b>, <b>Luther</b> and <b>Broadchurch</b>.</p>
+            <div class="hero-links"><a class="cta" href="mailto:mail@ntpost.co.uk?subject=Call%20back%20request&amp;body=Hi%20Nick%2C%0A%0ACould%20you%20give%20me%20a%20call%20about%3A%20%0A%0ABest%20number%3A%20%0ABest%20time%3A%20">book a call →</a><a class="cta" href="#credits">see the work →</a></div>
           </div>
-          <div class="roller" id="roller" aria-label="Credits, rolling">
-            <div class="roll" id="roll"></div>
-          </div>
+          <ul class="usp" aria-label="Why NT Post">
+            <li><b>experienced</b><span>20 years in post, Soho-trained, on BAFTA- and Emmy-winning shows.</span></li>
+            <li><b>flexible</b><span>Remote, in-house at your facility, or extra Flame seats in the cloud.</span></li>
+            <li><b>secure</b><span>A dedicated, firewalled suite with fast connectivity and encrypted storage.</span></li>
+            <li><b>better value</b><span>Facility-quality Flame work, without the facility overheads.</span></li>
+          </ul>
+        </div>
+        <div class="who">
+          <p>For producers, post producers and VFX supervisors, from a handful of fixes to a full show. Also available to facilities for overflow work, in-house or remote.</p>
+          <a class="cta" href="mailto:mail@ntpost.co.uk?subject=Call%20back%20request&amp;body=Hi%20Nick%2C%0A%0ACould%20you%20give%20me%20a%20call%20about%3A%20%0A%0ABest%20number%3A%20%0ABest%20time%3A%20">book a call →</a>
         </div>
       </div>
     </section>
@@ -431,7 +460,7 @@ main, footer, nav, .ext { transition: opacity 1.1s ease, transform 1.4s cubic-be
       <div class="about">
         <div class="copy">
           <h1>NT Post Ltd<br><span class="sub">VFX, online, titles and conform for television &amp; film</span></h1>
-          <p>NT Post is a Flame VFX and online company, founded in 2026 by Nick Timms, a Flame artist and senior online editor with twenty years in post production.</p>
+          <p>NT Post is a Flame VFX and online company, founded in 2026 by Nick Timms, a Soho-trained Flame artist and senior online editor with twenty years in post production.</p>
           <p>Nick has worked on BAFTA- and Emmy-winning shows for broadcasters and streaming platforms, at Encore, Technicolor, Picture Shop and The Farm Soho. Along the way he has collaborated closely with renowned writers, directors, producers, VFX supervisors and post producers, shaping the visual effects, titles and credits on their shows.</p>
           <div class="founder-links"><span>nick timms</span><a href="https://www.imdb.com/name/nm3327903/" target="_blank" rel="noopener">imdb ↗</a><a href="https://www.linkedin.com/in/nick-timms-0479931a/" target="_blank" rel="noopener">linkedin ↗</a><a href="#cv">cv →</a></div>
         </div>
@@ -483,6 +512,7 @@ main, footer, nav, .ext { transition: opacity 1.1s ease, transform 1.4s cubic-be
           <button type="button" class="copybtn" id="copy">copy address</button>
         </div>
         <div class="row"><a class="big" href="tel:+447725665028">07725 665028</a></div>
+        <a class="callbtn" href="mailto:mail@ntpost.co.uk?subject=Call%20back%20request&amp;body=Hi%20Nick%2C%0A%0ACould%20you%20give%20me%20a%20call%20about%3A%20%0A%0ABest%20number%3A%20%0ABest%20time%3A%20">book a call back</a>
       </div>
     </section>
   </main>
@@ -722,21 +752,6 @@ const chips = GROUPS.map(g => {
 });
 
 function openWork(i) { chips[0].click(); go("credits"); try { history.replaceState(null, "", "#credits"); } catch (_) {} window.scrollTo(0, 0); show(i); }
-// home: the credit roll, two copies end to end so it loops without a jump
-(() => {
-  const roll = $("roll");
-  // only NT Post's own credits on the landing page; the founder's earlier work stays on the work page
-  const label = document.createElement("div"); label.className = "rlabel"; label.textContent = "nt post ltd · recent work"; roll.before(label);
-  [0].forEach(copy => ALL.forEach((s, i) => {
-    if (!NTPOST.has(s[0])) return;
-    const b = document.createElement("button"); b.type = "button"; b.className = "ri";
-    const r = document.createElement("span"); r.className = "rr"; r.textContent = roleOf(s[0]);
-    const t = document.createElement("span"); t.className = "rt"; t.textContent = s[0];
-    const m = document.createElement("span"); m.className = "rm"; m.textContent = `${s[2].split(" / ")[0]} · ${s[3]}`;
-    b.append(r, t, m); b.addEventListener("click", () => openWork(i)); roll.append(b);
-  }));
-  roll.classList.add("still");
-})();
 // home: the networks delivered for
 (() => {
   const norm = n => /^BBC/.test(n) ? "BBC" : /Prime Video/.test(n) ? "Prime Video" : /^Sky/.test(n) ? "Sky" : n;
